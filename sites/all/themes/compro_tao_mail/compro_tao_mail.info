@@ -1,0 +1,22 @@
+name = Compro Tao Mail
+description = Custom Tao subtheme for email, delivered by Commercial Progression
+base theme = tao
+core = 7.x
+
+regions[header] = Header
+regions[subhead] = Sub-head
+regions[content] = Content
+regions[footer] = Footer
+
+; Hidden but required
+regions[page_top] = Page top
+regions[page_bottom] = Page bottom
+
+stylesheets[screen][] = mail.css
+
+; override tao
+stylesheets[all][] = reset.css
+stylesheets[all][] = base.css
+stylesheets[screen][] = drupal.css
+; other overrides
+stylesheets[all][] = field_collection.theme.css
