@@ -11,9 +11,6 @@ function compro_content_authoring_ctools_plugin_api($module = NULL, $api = NULL)
   if ($module == "strongarm" && $api == "strongarm") {
     return array("version" => "1");
   }
-  if ($module == "video_embed_field" && $api == "default_video_embed_styles") {
-    return array("version" => "1");
-  }
 }
 
 /**
@@ -27,7 +24,7 @@ function compro_content_authoring_image_default_styles() {
     'name' => '320x240_scale_and_crop',
     'label' => '320x240 Scale and crop',
     'effects' => array(
-      3 => array(
+      1 => array(
         'label' => 'Scale',
         'help' => 'Scaling will maintain the aspect-ratio of the original image. If only a single dimension is specified, the other dimension will be calculated.',
         'effect callback' => 'image_scale_effect',
@@ -43,7 +40,7 @@ function compro_content_authoring_image_default_styles() {
         ),
         'weight' => 1,
       ),
-      4 => array(
+      2 => array(
         'label' => 'Crop',
         'help' => 'Cropping will remove portions of an image to make it the specified dimensions.',
         'effect callback' => 'image_crop_effect',
@@ -55,6 +52,46 @@ function compro_content_authoring_image_default_styles() {
         'data' => array(
           'width' => 320,
           'height' => 240,
+          'anchor' => 'center-center',
+        ),
+        'weight' => 2,
+      ),
+    ),
+  );
+
+  // Exported image style: slide_full.
+  $styles['slide_full'] = array(
+    'name' => 'slide_full',
+    'label' => 'Full-width Slide',
+    'effects' => array(
+      3 => array(
+        'label' => 'Scale',
+        'help' => 'Scaling will maintain the aspect-ratio of the original image. If only a single dimension is specified, the other dimension will be calculated.',
+        'effect callback' => 'image_scale_effect',
+        'dimensions callback' => 'image_scale_dimensions',
+        'form callback' => 'image_scale_form',
+        'summary theme' => 'image_scale_summary',
+        'module' => 'image',
+        'name' => 'image_scale',
+        'data' => array(
+          'width' => 1920,
+          'height' => '',
+          'upscale' => 1,
+        ),
+        'weight' => 1,
+      ),
+      4 => array(
+        'label' => 'Crop',
+        'help' => 'Cropping will remove portions of an image to make it the specified dimensions.',
+        'effect callback' => 'image_crop_effect',
+        'dimensions callback' => 'image_resize_dimensions',
+        'form callback' => 'image_crop_form',
+        'summary theme' => 'image_crop_summary',
+        'module' => 'image',
+        'name' => 'image_crop',
+        'data' => array(
+          'width' => 1920,
+          'height' => 400,
           'anchor' => 'center-center',
         ),
         'weight' => 2,

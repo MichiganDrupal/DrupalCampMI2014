@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Paragraph Bundles feature.
+ */
+
+include_once 'compro_paragraphs.features.inc';

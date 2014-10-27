@@ -1,0 +1,200 @@
+<?php
+
+/**
+ * @file
+ * Module file for heading_field.
+ */
+
+/**
+ * Implements hook_field_info().
+ */
+function heading_field_field_info() {
+  return array(
+    'heading_text' => array(
+      'label' => t('Heading'),
+      'description' => t('This field is short varchar, with a wrapper.'),
+      'settings' => array(
+        'max_length' => 255,
+        'allowed_wrappers' => array(
+          'h2', 'h3', 'h4', 'h5',
+        ),
+      ),
+      'instance_settings' => array('text_processing' => 0),
+      'default_widget' => 'heading_textfield',
+      'default_formatter' => 'heading_default',
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_settings_form().
+ */
+function heading_field_field_settings_form($field, $instance, $has_data) {
+  $settings = $field['settings'];
+
+  $form = array();
+
+  if ($field['type'] == 'heading_text') {
+    $form['max_length'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Maximum length'),
+      '#default_value' => $settings['max_length'],
+      '#required' => TRUE,
+      '#description' => t('The maximum length of the field in characters.'),
+      '#element_validate' => array('element_validate_integer_positive'),
+      '#disabled' => $has_data,
+    );
+    $form['allowed_wrappers'] = array(
+      '#type' => 'checkboxes',
+      '#title' => t('Allowed wrappers'),
+      '#default_value' => $settings['allowed_wrappers'],
+      '#required' => TRUE,
+      '#description' => t('The list of headings to choose from.'),
+      '#options' => _heading_field_get_options(),
+      '#disabled' => $has_data,
+    );
+  }
+
+  return $form;
+}
+
+/**
+ * Implements hook_field_validate().
+ */
+function heading_field_field_validate($entity_type, $entity, $field, $instance, $langcode, $items, &$errors) {
+  foreach ($items as $delta => $item) {
+    if (!empty($item['value']) &&
+        !empty($field['settings']['max_length']) &&
+        drupal_strlen($item['value']) > $field['settings']['max_length']
+    ) {
+      $message = t('%name: the text may not be longer than %max characters.', array(
+        '%name' => $instance['label'],
+        '%max' => $field['settings']['max_length'],
+      ));
+      $errors[$field['field_name']][$langcode][$delta][] = array(
+        'error' => "text_{$column}_length",
+        'message' => $message,
+      );
+    }
+  }
+}
+
+/**
+ * Implements hook_field_is_empty().
+ */
+function heading_field_field_is_empty($item, $field) {
+  return (!isset($item['value']) || $item['value'] === '');
+}
+
+/**
+ * Implements hook_field_formatter_info().
+ */
+function heading_field_field_formatter_info() {
+  return array(
+    'heading_default' => array(
+      'label' => t('Text as heading'),
+      'field types' => array('heading_text'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ */
+function heading_field_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $element = array();
+
+  switch ($display['type']) {
+    case 'heading_default':
+      foreach ($items as $delta => $item) {
+        $element[$delta] = array(
+          '#type' => 'html_tag',
+          '#tag' => $item['wrapper'],
+          '#value' => _text_sanitize($instance, $langcode, $item, 'value'),
+        );
+      }
+      break;
+  }
+
+  return $element;
+}
+
+/**
+ * Implements hook_field_widget_info().
+ */
+function heading_field_field_widget_info() {
+  return array(
+    'heading_textfield' => array(
+      'label' => t('Text with selector'),
+      'field types' => array('heading_text'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_widget_form().
+ */
+function heading_field_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
+  switch ($instance['widget']['type']) {
+    case 'heading_textfield':
+      $element['#type'] = 'fieldset';
+      $element['value'] = array(
+        '#type' => 'textfield',
+        '#default_value' => isset($items[$delta]['value']) ? $items[$delta]['value'] : NULL,
+        '#maxlength' => $field['settings']['max_length'],
+        '#attributes' => array('class' => array('text-full')),
+        '#title' => t('Heading text'),
+      );
+      // Get available options and limit to allowed values.
+      $options = _heading_field_get_options();
+      $allowed = array();
+      foreach ($field['settings']['allowed_wrappers'] as $key => $value) {
+        if ($value) {
+          $allowed[$key] = 1;
+        }
+      }
+      $options = array_intersect_key($options, $allowed);
+
+      // Add select list for the heading type.
+      $element['wrapper'] = array(
+        '#type' => 'select',
+        '#default_value' => isset($items[$delta]['wrapper']) ? $items[$delta]['wrapper'] : NULL,
+        '#options' => $options,
+        '#title' => t('Heading type'),
+      );
+      break;
+  }
+
+  return $element;
+}
+
+/**
+ * Implements hook_field_widget_error().
+ */
+function heading_field_field_widget_error($element, $error, $form, &$form_state) {
+  switch ($error['error']) {
+    case 'text_summary_max_length':
+      $error_element = $element[$element['#columns'][1]];
+      break;
+
+    default:
+      $error_element = $element[$element['#columns'][0]];
+      break;
+  }
+
+  form_error($error_element, $error['message']);
+}
+
+/**
+ * Helper function to get options (all or available).
+ */
+function _heading_field_get_options() {
+  return array(
+    'h1' => t('Heading 1'),
+    'h2' => t('Heading 2'),
+    'h3' => t('Heading 3'),
+    'h4' => t('Heading 4'),
+    'h5' => t('Heading 5'),
+    'h6' => t('Heading 6'),
+  );
+}

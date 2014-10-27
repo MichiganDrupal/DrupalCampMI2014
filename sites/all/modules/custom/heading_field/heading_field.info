@@ -1,0 +1,4 @@
+name = Heading field
+description = Provides a field type that allows text to be in heading tags.
+core = 7.x
+package = Fields

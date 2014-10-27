@@ -95,6 +95,7 @@ body {
   color: #333;
   font-family: 'opensans', sans-serif;
   font-size: 16px;
+  font-weight: lighter;
   letter-spacing: .05em;
   line-height: 1.45;
   margin: 0;
@@ -141,7 +142,6 @@ h1 {
   }
 h2 {
   border-bottom: 1px solid #ccc;
-  color: #0b5182;
   font-size: 2.5em;
   font-weight: 400;
   margin: 0 0 .3em;
@@ -543,7 +543,7 @@ ul.inline {
         }
         .main-menu .menu > li a.active,
         .main-menu .menu > li a:hover {
-          color: #0b5182;
+          color: #3497cc;
         }
       .main-menu .menu > li.last a {
         margin: 0;
@@ -879,7 +879,6 @@ linkedin, pinterest, reddit, twitter, vimeo, youtube
     }
   .region-nav {}
     .region-nav .block-content > ul.menu {
-      background: #444;
       padding: 5px;
       overflow: hidden;
       position: relative;
@@ -898,11 +897,11 @@ linkedin, pinterest, reddit, twitter, vimeo, youtube
           border-right: 0 none;
         }
         .region-nav .block-content > ul.menu a.active {
-          color: #76a13b;
+          color: #3497cc;
         }
         .region-nav .block-content > ul.menu a:hover,
         .region-nav .block-content > ul.menu a:active {
-          background: #666;
+          background: #ddd;
         }
     @media screen and (max-width: 640px) {
       .region-nav .block-content > ul.menu a {
@@ -932,8 +931,7 @@ linkedin, pinterest, reddit, twitter, vimeo, youtube
       margin-top: 20px;
     }
   .region-pre-footer {
-    background: #666;
-    color: #fff;
+    background: #ccc;
     margin-top: 40px;
   }
     .region-pre-footer > .inner {
@@ -949,8 +947,7 @@ linkedin, pinterest, reddit, twitter, vimeo, youtube
         border-right: 0 none;
       }
   .region-footer {
-    background: #444;
-    color: #fff;
+    background: #ddd;
   }
     .region-footer > .inner {
       padding: 30px 0;
